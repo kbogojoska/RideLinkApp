@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:emk/widgets/new_route/progress_bar.dart';
+import 'package:provider/provider.dart';
 
+
+import '../../providers/route_provider.dart';
+import '../../providers/temporary_provider.dart';
 import '../../screens/post_route_screen2.dart';
+import '../../screens/routes_passengers_screen.dart';
+import '../new_route/progress_bar.dart';
 
 class PostRouteScreen1Form extends StatelessWidget {
   final TextEditingController departureController;
@@ -139,11 +144,15 @@ class PostRouteScreen1Form extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PostRouteScreen2()),
+              final tempProvider = Provider.of<TemporaryRouteProvider>(context, listen: false);
+              tempProvider.setStep1(
+                from: departureController.text,
+                to: destinationController.text,
+                date: dateController.text,
+                time: timeController.text,
               );
+
+              Navigator.push(context, MaterialPageRoute(builder: (_) => PostRouteScreen2()));
             },
             style: ElevatedButton.styleFrom(
               minimumSize: Size(double.infinity, 50),

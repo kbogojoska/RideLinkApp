@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../models/review_model.dart';
+import '../../models/route_model.dart';
+import '../../providers/route_provider.dart';
+import '../../providers/temporary_provider.dart';
 import '../../screens/routes_passengers_screen.dart';
 import '../../screens/post_route_screen1.dart';
 import 'progress_bar_for_passengers.dart';
@@ -225,11 +229,25 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           child: ElevatedButton(
             onPressed: () {
-              Navigator.push(
+              final tempProvider = Provider.of<TemporaryRouteProvider>(context, listen: false);
+              final routeProvider = Provider.of<RouteProvider>(context, listen: false);
+
+              routeProvider.addRoute(RouteModel(
+                from: tempProvider.from,
+                to: tempProvider.to,
+                date: tempProvider.date,
+                time: tempProvider.time,
+              ));
+
+              tempProvider.clear();
+
+              Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => RoutesPassengersScreen()),
+                MaterialPageRoute(builder: (_) => RoutesPassengersScreen()),
+                    (route) => false,
               );
-            },
+            }
+            ,
             style: ElevatedButton.styleFrom(
               minimumSize: Size(double.infinity, 50),
               backgroundColor: Colors.blue[800],

@@ -15,9 +15,21 @@ import 'package:emk/screens/new_route_screen1.dart';
 import 'package:emk/screens/new_route_screen2.dart';
 import 'package:emk/screens/new_route_screen3.dart';
 import 'package:emk/screens/new_route_screen4.dart';
+import 'package:provider/provider.dart';
+
+import 'providers/route_provider.dart';
+import 'providers/temporary_provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => TemporaryRouteProvider()),
+          ChangeNotifierProvider(create: (_) => RouteProvider()),
+        ],
+        child: MyApp(),
+      )
+  );
 }
 
 class MyApp extends StatelessWidget {
