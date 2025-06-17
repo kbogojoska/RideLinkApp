@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ride_share/models/route_model.dart';
-import 'package:ride_share/widgets/route_drivers_card.dart';
+import 'package:emk/models/route_model.dart';
+import 'package:emk/widgets/route_drivers_card.dart';
 import '../widgets/app_menu.dart';
 
 class RoutesDriversScreen extends StatelessWidget {

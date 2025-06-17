@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ride_share/models/route_passenger_model.dart';
+import 'package:emk/models/route_passenger_model.dart';
 import '../widgets/app_menu.dart';
 import '../widgets/passenger_route_card.dart';
 
