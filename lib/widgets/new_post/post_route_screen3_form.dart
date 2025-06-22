@@ -6,6 +6,8 @@ import '../../providers/route_provider.dart';
 import '../../providers/temporary_provider.dart';
 import '../../screens/routes_passengers_screen.dart';
 import '../../screens/post_route_screen1.dart';
+import '../../screens/map_screen.dart';
+import '../geocoding_helper.dart';
 import 'progress_bar_for_passengers.dart';
 
 class PostRouteScreen3Form extends StatefulWidget {
@@ -24,6 +26,8 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
 
   @override
   Widget build(BuildContext context) {
+    final tempProvider = Provider.of<TemporaryRouteProvider>(context);
+
     return Column(
       children: [
         Padding(
@@ -55,130 +59,178 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // From Section
-                        Row(
-                          children: [
-                            Icon(Icons.my_location,
-                                color: Color(0xFF1f1047), size: 24),
-                            SizedBox(width: 8),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("From",
-                                    style: TextStyle(
-                                        color: Color(0xFF4c5475),
-                                        fontSize: 12)),
-                                Text(widget.route.from,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold)),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16),
-
-                        // To Section
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
+                            Stack(
                               children: [
-                                Icon(Icons.location_on,
-                                    color: Color(0xFF1f1047), size: 24),
-                                SizedBox(width: 8),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("To",
-                                        style: TextStyle(
-                                            color: Color(0xFF4c5475),
-                                            fontSize: 12)),
-                                    Text(widget.route.to,
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 2),
+                                          child: Icon(Icons.my_location,
+                                              color: Color(0xFF1f1047), size: 26),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 24),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Text("From",
+                                                  style: TextStyle(
+                                                      color: Color(0xFF4c5475))),
+                                              Text(tempProvider.from,
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.bold)),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 40),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.location_on,
+                                            color: Color(0xFF1f1047), size: 30),
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 20),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Text("To",
+                                                  style: TextStyle(
+                                                      color: Color(0xFF4c5475))),
+                                              Text(tempProvider.to,
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.bold)),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ],
+                                ),
+                                Positioned(
+                                  top: 45,
+                                  left: 13,
+                                  child: Container(
+                                    height: 40,
+                                    child: Column(
+                                      children: List.generate(5, (index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 2.0),
+                                          child: Container(
+                                            width: 4,
+                                            height: 4,
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFF1f1047),
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                            // Time and Date Section
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                Text(
-                                  widget.route.time,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: Color(0xFF4c5475),
-                                  ),
-                                ),
-                                Text(
-                                  widget.route.date,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF4c5475),
-                                  ),
-                                ),
+                                Text(tempProvider.time,
+                                    style: TextStyle(
+                                        color: Color(0xFF4c5475),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
+                                Text(tempProvider.date,
+                                    style: TextStyle(color: Color(0xFF4c5475))),
                               ],
                             ),
                           ],
                         ),
-                        SizedBox(height: 12),
 
-                        // Seats and Luggage Section
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Seats Needed: ${widget.route.seats}",
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 16.0, left: 12.0, right: 12.0),
+                          child:
+                          Divider(color: Color(0xFF4c5475), thickness: 1.5),
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+
+                                    SizedBox(height: 8),
+
+                                  ],
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.map, color: Color(0xFF1f1047)),
+                                tooltip: "Show Route on Map",
+                                onPressed: () async {
+                                  final start = await GeocodingHelper.getCoordinates(tempProvider.from);
+                                  final end = await GeocodingHelper.getCoordinates(tempProvider.to);
+
+                                  if (start != null && end != null) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => MapScreen(
+                                          startLocation: start,
+                                          destinationLocation: end,
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text("Could not locate address.")),
+                                    );
+                                  }
+                                },
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PostRouteScreen1()),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xFF1f1047),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 8,
+                                  ),
+                                ),
+                                child: Text(
+                                  "Edit",
                                   style: TextStyle(
-                                    color: Color(0xFF1f1047),
-                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
                                     fontSize: 14,
                                   ),
                                 ),
-                                SizedBox(height: 8),
-                                Text(
-                                  "Luggage: ${widget.route.smallBags ?? 0} small bags",
-                                  style: TextStyle(
-                                    color: Color(0xFF1f1047),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => PostRouteScreen1()),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF1f1047),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 8,
-                                ),
                               ),
-                              child: Text(
-                                "Edit",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -229,9 +281,10 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           child: ElevatedButton(
             onPressed: () {
-              final tempProvider = Provider.of<TemporaryRouteProvider>(context, listen: false);
-              final routeProvider = Provider.of<RouteProvider>(context, listen: false);
+              final routeProvider =
+              Provider.of<RouteProvider>(context, listen: false);
 
+              // Use provider's current values to add route
               routeProvider.addRoute(RouteModel(
                 from: tempProvider.from,
                 to: tempProvider.to,
@@ -246,8 +299,7 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                 MaterialPageRoute(builder: (_) => RoutesPassengersScreen()),
                     (route) => false,
               );
-            }
-            ,
+            },
             style: ElevatedButton.styleFrom(
               minimumSize: Size(double.infinity, 50),
               backgroundColor: Colors.blue[800],

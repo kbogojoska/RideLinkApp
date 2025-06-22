@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-
-import '../../providers/route_provider.dart';
 import '../../providers/temporary_provider.dart';
 import '../../screens/post_route_screen2.dart';
-import '../../screens/routes_passengers_screen.dart';
 import '../new_route/progress_bar.dart';
 
 class PostRouteScreen1Form extends StatelessWidget {
@@ -53,7 +49,8 @@ class PostRouteScreen1Form extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: ProgressBar(currentStep: 1,
+          child: ProgressBar(
+            currentStep: 1,
             totalSteps: 3,
             stepLabels: [
               "Trip Details",
@@ -152,7 +149,10 @@ class PostRouteScreen1Form extends StatelessWidget {
                 time: timeController.text,
               );
 
-              Navigator.push(context, MaterialPageRoute(builder: (_) => PostRouteScreen2()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => PostRouteScreen2()),
+              );
             },
             style: ElevatedButton.styleFrom(
               minimumSize: Size(double.infinity, 50),
@@ -170,7 +170,6 @@ class PostRouteScreen1Form extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 16),
       ],
     );
   }

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:emk/models/route_passenger_model.dart';
+import 'package:emk/screens/map_screen.dart';
+
+import 'geocoding_helper.dart';
+
 
 class PassengerRouteCard extends StatelessWidget {
   final RoutePassengerModel route;
 
-  const PassengerRouteCard({
-    required this.route,
-  });
+  const PassengerRouteCard({required this.route});
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +23,7 @@ class PassengerRouteCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            /// FROM / TO DISPLAY
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -43,7 +46,7 @@ class PassengerRouteCard extends StatelessWidget {
                                 children: [
                                   Text("From",
                                       style:
-                                          TextStyle(color: Color(0xFF4c5475))),
+                                      TextStyle(color: Color(0xFF4c5475))),
                                   Text(route.from,
                                       style: TextStyle(
                                           fontSize: 18,
@@ -65,7 +68,7 @@ class PassengerRouteCard extends StatelessWidget {
                                 children: [
                                   Text("To",
                                       style:
-                                          TextStyle(color: Color(0xFF4c5475))),
+                                      TextStyle(color: Color(0xFF4c5475))),
                                   Text(route.to,
                                       style: TextStyle(
                                           fontSize: 18,
@@ -86,7 +89,7 @@ class PassengerRouteCard extends StatelessWidget {
                           children: List.generate(5, (index) {
                             return Padding(
                               padding:
-                                  const EdgeInsets.symmetric(vertical: 2.0),
+                              const EdgeInsets.symmetric(vertical: 2.0),
                               child: Container(
                                 width: 4,
                                 height: 4,
@@ -119,27 +122,56 @@ class PassengerRouteCard extends StatelessWidget {
 
             Padding(
               padding:
-                  const EdgeInsets.only(top: 16.0, left: 12.0, right: 12.0),
+              const EdgeInsets.only(top: 16.0, left: 12.0, right: 12.0),
               child: Divider(color: Color(0xFF4c5475), thickness: 1.5),
             ),
+
             Padding(
               padding: const EdgeInsets.only(left: 12.0, right: 12.0),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
                     child: Align(
-                      alignment: Alignment.bottomLeft,
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         "Requested by: ${route.passenger}",
-                        style: TextStyle(color: Color(0xFF1f1047), fontWeight: FontWeight.bold, fontSize: 12),
+                        style: TextStyle(
+                          color: Color(0xFF1f1047),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ),
 
+                  IconButton(
+                    icon: Icon(Icons.map, color: Color(0xFF1f1047)),
+                    tooltip: "Show Route on Map",
+                    onPressed: () async {
+                      final start = await GeocodingHelper.getCoordinates(route.from);
+                      final end = await GeocodingHelper.getCoordinates(route.to);
+
+                      if (start != null && end != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => MapScreen(
+                              startLocation: start,
+                              destinationLocation: end,
+                            ),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Could not locate address.")),
+                        );
+                      }
+                    },
+                  ),
+
+                  /// ➤ APPLY BUTTON
                   ElevatedButton(
                     onPressed: () {
-                      //TODO add route to apply for passenger route
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFF1f1047),
@@ -150,7 +182,8 @@ class PassengerRouteCard extends StatelessWidget {
                     ),
                     child: Text(
                       "Apply",
-                      style: TextStyle(fontFamily: 'Lato', color: Colors.white),
+                      style:
+                      TextStyle(fontFamily: 'Lato', color: Colors.white),
                     ),
                   ),
                 ],
