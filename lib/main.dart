@@ -1,3 +1,4 @@
+import 'package:emk/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:emk/screens/history_screen.dart';
 import 'package:emk/screens/login_screen.dart';
@@ -10,7 +11,7 @@ import 'package:emk/screens/routes_passengers_screen.dart';
 import 'package:emk/screens/post_route_screen1.dart';
 import 'package:emk/screens/welcome_screen.dart';
 
-// Import your new screens
+
 import 'package:emk/screens/new_route_screen1.dart';
 import 'package:emk/screens/new_route_screen2.dart';
 import 'package:emk/screens/new_route_screen3.dart';
@@ -20,8 +21,13 @@ import 'package:provider/provider.dart';
 import 'providers/route_provider.dart';
 import 'providers/temporary_provider.dart';
 
-void main() {
-  runApp(
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  debugPrint('Starting Firebase initialization...');
+  try {
+     await FirebaseService.initialize();
+    debugPrint('Firebase initialized successfully');
+    runApp(
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => TemporaryRouteProvider()),
@@ -29,7 +35,19 @@ void main() {
         ],
         child: MyApp(),
       )
-  );
+  ); }
+  catch (e) {
+    debugPrint('Firebase initialization failed: $e');
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Text('Failed to initialize Firebase: $e'),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {

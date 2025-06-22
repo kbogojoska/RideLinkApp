@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../services/auth_service.dart';
+
 class AppMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -12,14 +14,21 @@ class AppMenu extends StatelessWidget {
           backgroundColor: Colors.transparent,
           builder: (BuildContext context) {
             return Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width,
               color: Colors.white,
               child: Column(
                 children: [
                   // Increased height of the blue area
                   Padding(
-                    padding: EdgeInsets.only(top: 40), // Adjust this to change space below the status bar
+                    padding: EdgeInsets.only(top: 40),
+                    // Adjust this to change space below the status bar
                     child: Container(
                       color: Color(0xFF1F1047),
                       padding: EdgeInsets.only(
@@ -42,7 +51,8 @@ class AppMenu extends StatelessWidget {
                           ),
                           // Close Menu Icon
                           IconButton(
-                            icon: Icon(Icons.menu, color: Colors.white, size: 30),
+                            icon: Icon(
+                                Icons.menu, color: Colors.white, size: 30),
                             onPressed: () {
                               Navigator.pop(context); // Close the menu
                             },
@@ -59,10 +69,17 @@ class AppMenu extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildMenuItem(context, 'PROFILE', '/profile'),
-                          _buildMenuItem(context, 'POSTS (ROUTES FROM PASSENGER)', '/routesPassengers'),
-                          _buildMenuItem(context, 'TRAVELS (ROUTES BY DRIVERS)', '/routesDrivers'),
-                          _buildMenuItem(context, 'ADD NEW ROUTE', '/tripDetails'),
-                          _buildMenuItem(context, 'ADD NEW POST', '/tripDetails2'),
+                          _buildMenuItem(
+                              context, 'POSTS (ROUTES FROM PASSENGER)',
+                              '/routesPassengers'),
+                          _buildMenuItem(context, 'TRAVELS (ROUTES BY DRIVERS)',
+                              '/routesDrivers'),
+                          _buildMenuItem(
+                              context, 'ADD NEW ROUTE', '/tripDetails'),
+                          _buildMenuItem(
+                              context, 'ADD NEW POST', '/tripDetails2'),
+                          _buildMenuItem(
+                              context, 'SIGN OUT', '/welcome', isSignOut: true),
                         ],
                       ),
                     ),
@@ -76,11 +93,21 @@ class AppMenu extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuItem(BuildContext context, String title, String route) {
+  Widget _buildMenuItem(BuildContext context, String title, String route,
+      {bool isSignOut = false}) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pop(context); // Close the menu
-        Navigator.pushNamed(context, route); // Navigate to the route
+      onTap: () async {
+        Navigator.pop(context); // Close the bottom sheet
+
+        if (isSignOut) {
+          await AuthService().signOut();
+
+          // Navigate to welcome and remove all previous routes
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              '/welcome', (route) => false);
+        } else {
+          Navigator.pushNamed(context, route);
+        }
       },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
