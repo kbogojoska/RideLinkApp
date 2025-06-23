@@ -180,7 +180,7 @@ class _NewRouteScreen3Form extends State<NewRouteScreen3Form> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(180, 60),
+                  minimumSize: Size(160, 60),
                   backgroundColor: Colors.grey,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -200,7 +200,7 @@ class _NewRouteScreen3Form extends State<NewRouteScreen3Form> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(180, 60),
+                  minimumSize: Size(160, 60),
                   backgroundColor: Colors.blue[800],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),

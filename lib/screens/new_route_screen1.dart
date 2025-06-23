@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/new_route/new_route_screen1_form.dart';
+import '../screens/routes_drivers_screen.dart'; // Import the target screen
 
 class NewRouteScreen1 extends StatelessWidget {
   final TextEditingController departureController = TextEditingController();
@@ -11,6 +12,35 @@ class NewRouteScreen1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: IconButton(
+              icon: Icon(Icons.arrow_back_ios_new, color: Color(0xFF1F1047)),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => RoutesDriversScreen()),
+                );              },
+            ),
+          ),
+        ),
+      ),
+      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           Image.asset(
@@ -29,7 +59,6 @@ class NewRouteScreen1 extends StatelessWidget {
             left: 0,
             right: 0,
             child: ClipPath(
-              clipper: CustomCurveClipper(),
               child: Container(
                 height: MediaQuery.of(context).size.height / 5.5,
                 child: Image.asset(
@@ -47,7 +76,7 @@ class NewRouteScreen1 extends StatelessWidget {
             child: Container(
               color: Colors.white,
               height: MediaQuery.of(context).size.height -
-                  (MediaQuery.of(context).size.height / 5.5)-40,
+                  (MediaQuery.of(context).size.height / 5.5) - 40,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: NewRouteScreen1Form(
@@ -63,32 +92,5 @@ class NewRouteScreen1 extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class CustomCurveClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    Path path = Path();
-    path.lineTo(0, size.height * 0.7);
-
-    path.quadraticBezierTo(
-      size.width * 0.2, size.height * 0.55,
-      size.width * 0.5, size.height * 0.6,
-    );
-
-    path.quadraticBezierTo(
-      size.width * 0.8, size.height * 0.65,
-      size.width, size.height * 0.5,
-    );
-
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
-    return false;
   }
 }

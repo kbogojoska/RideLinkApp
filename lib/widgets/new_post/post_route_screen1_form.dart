@@ -27,7 +27,7 @@ class PostRouteScreen1Form extends StatelessWidget {
 
     if (selectedDate != null) {
       dateController.text =
-      '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}';
+      '${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}';
     }
   }
 
@@ -40,6 +40,32 @@ class PostRouteScreen1Form extends StatelessWidget {
     if (selectedTime != null) {
       timeController.text = selectedTime.format(context);
     }
+  }
+
+  void _handleNext(BuildContext context) {
+    if (departureController.text.trim().isEmpty ||
+        destinationController.text.trim().isEmpty ||
+        dateController.text.trim().isEmpty ||
+        timeController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill in all the fields')),
+      );
+      return;
+    }
+
+    final tempProvider =
+    Provider.of<TemporaryRouteProvider>(context, listen: false);
+    tempProvider.setStep1(
+      from: departureController.text,
+      to: destinationController.text,
+      date: dateController.text,
+      time: timeController.text,
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => PostRouteScreen2()),
+    );
   }
 
   @override
@@ -140,20 +166,7 @@ class PostRouteScreen1Form extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: ElevatedButton(
-            onPressed: () {
-              final tempProvider = Provider.of<TemporaryRouteProvider>(context, listen: false);
-              tempProvider.setStep1(
-                from: departureController.text,
-                to: destinationController.text,
-                date: dateController.text,
-                time: timeController.text,
-              );
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => PostRouteScreen2()),
-              );
-            },
+            onPressed: () => _handleNext(context),
             style: ElevatedButton.styleFrom(
               minimumSize: Size(double.infinity, 50),
               backgroundColor: Colors.blue[800],

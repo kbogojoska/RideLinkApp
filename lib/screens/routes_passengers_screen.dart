@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/route_passenger_model.dart';
 import '../providers/route_provider.dart';
+import '../providers/user_provider.dart';
 import '../widgets/app_menu.dart';
 import '../widgets/passenger_route_card.dart';
 import 'post_route_screen1.dart';
@@ -10,8 +11,8 @@ class RoutesPassengersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routes = Provider.of<RouteProvider>(context).routes;
+    final role = Provider.of<UserProvider>(context).role;
 
-    // Convert to List<RoutePassengerModel>
     final passengerRoutes = routes.map((route) => RoutePassengerModel(
       from: route.from,
       to: route.to,
@@ -35,7 +36,6 @@ class RoutesPassengersScreen extends StatelessWidget {
         actions: [
           AppMenu(),
         ],
-        leading: null,
         automaticallyImplyLeading: false,
       ),
       backgroundColor: Colors.white,
@@ -63,7 +63,8 @@ class RoutesPassengersScreen extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: role == 'passenger'
+          ? FloatingActionButton(
         backgroundColor: Color(0xFF1F1047),
         child: Icon(Icons.add),
         onPressed: () {
@@ -72,7 +73,8 @@ class RoutesPassengersScreen extends StatelessWidget {
             MaterialPageRoute(builder: (_) => PostRouteScreen1()),
           );
         },
-      ),
+      )
+          : null,
     );
   }
 }

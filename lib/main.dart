@@ -1,3 +1,5 @@
+import 'package:emk/providers/user_provider.dart';
+import 'package:emk/screens/choose_role_screen.dart';
 import 'package:emk/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:emk/screens/history_screen.dart';
@@ -32,6 +34,7 @@ void main() async {
         providers: [
           ChangeNotifierProvider(create: (_) => TemporaryRouteProvider()),
           ChangeNotifierProvider(create: (_) => RouteProvider()),
+          ChangeNotifierProvider(create: (_) => UserProvider()),
         ],
         child: MyApp(),
       )
@@ -72,6 +75,7 @@ class MyApp extends StatelessWidget {
         '/tripDetails2' : (context) => PostRouteScreen1(),
         '/seatAndLuggage' : (context) => PostRouteScreen2(),
         '/reviewAndPost' : (context) => PostRouteScreen3(),
+        '/chooseRole': (context) => ChooseRoleScreen(uid: ''),
       },
     );
   }

@@ -30,6 +30,8 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         minSdkVersion 23
+
+//        multiDexEnabled true
     }
 
     buildTypes {
@@ -52,3 +54,5 @@ dependencies {
 flutter {
     source = "../.."
 }
+
+//apply plugin: 'com.google.gms.google-services'

@@ -1,3 +1,4 @@
+import 'package:emk/screens/routes_passengers_screen.dart';
 import 'package:flutter/material.dart';
 import '../widgets/new_post/post_route_screen1_form.dart';
 
@@ -10,6 +11,35 @@ class PostRouteScreen1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12.0),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: IconButton(
+              icon: Icon(Icons.arrow_back_ios_new, color: Color(0xFF1F1047)),
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => RoutesPassengersScreen()),
+                );              },
+            ),
+          ),
+        ),
+      ),
+      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
           Image.asset(
@@ -46,7 +76,7 @@ class PostRouteScreen1 extends StatelessWidget {
             child: Container(
               color: Colors.white,
               height: MediaQuery.of(context).size.height -
-                  (MediaQuery.of(context).size.height / 5.5)-40,
+                  (MediaQuery.of(context).size.height / 5.5) - 40,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 child: PostRouteScreen1Form(
