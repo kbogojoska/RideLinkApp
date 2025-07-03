@@ -3,9 +3,11 @@ import '../models/route_model.dart';
 
 class RouteDriversCard extends StatelessWidget {
   final RouteModel route;
+  final VoidCallback onApply;
 
   const RouteDriversCard({
     required this.route,
+    required this.onApply,
   });
 
   @override
@@ -32,11 +34,11 @@ class RouteDriversCard extends StatelessWidget {
                 Icon(Icons.calendar_today, size: 20, color: Color(0xFF1F1047)),
                 SizedBox(width: 8),
                 Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Text(
-                      route.date,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: Text(
+                    route.date,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                 ),
               ],
             ),
@@ -76,7 +78,7 @@ class RouteDriversCard extends StatelessWidget {
                 Icon(Icons.group, size: 20, color: Color(0xFF1F1047)),
                 SizedBox(width: 8),
                 Text(
-                  '${route.passengers} passengers',
+                  '${route.seats} passengers',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ],
@@ -85,13 +87,10 @@ class RouteDriversCard extends StatelessWidget {
 
             Center(
               child: ElevatedButton(
-                onPressed: () {
-                },
+                onPressed: onApply,
                 child: Text(
-                    'Apply',
-                  style: const TextStyle(
-                    color: Colors.white
-                  ),
+                  'Apply',
+                  style: const TextStyle(color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF1F1047),

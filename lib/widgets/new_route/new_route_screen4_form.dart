@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import '../../models/review_model.dart';
+import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../../models/route_model.dart';
+import '../../providers/driver_provider.dart';
+import '../../providers/temporary_route_provider.dart';
 import '../../screens/new_route_screen1.dart';
 import '../../screens/routes_drivers_screen.dart';
 import 'progress_bar.dart';
 
 class NewRouteScreen4Form extends StatefulWidget {
-  final ReviewModel route;
-
-  const NewRouteScreen4Form({
-    required this.route,
-  });
+  const NewRouteScreen4Form({Key? key}) : super(key: key);
 
   @override
   State<NewRouteScreen4Form> createState() => _NewRouteScreen4Form();
@@ -17,9 +18,18 @@ class NewRouteScreen4Form extends StatefulWidget {
 
 class _NewRouteScreen4Form extends State<NewRouteScreen4Form> {
   bool _isChecked = false;
+  final TextEditingController _noteController = TextEditingController();
+
+  @override
+  void dispose() {
+    _noteController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final tempProvider = Provider.of<TemporaryDriverProvider>(context);
+
     return Column(
       children: [
         Padding(
@@ -35,169 +45,116 @@ class _NewRouteScreen4Form extends State<NewRouteScreen4Form> {
             ],
           ),
         ),
-
         Expanded(
           child: SingleChildScrollView(
             child: Container(
-              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Color(0xFFf2f2f2),
+                      color: const Color(0xFFf2f2f2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Column(
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // From Section
-                        Row(
-                          children: [
-                            Icon(Icons.my_location,
-                                color: Color(0xFF1f1047), size: 24),
-                            SizedBox(width: 8),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("From",
-                                    style: TextStyle(
-                                        color: Color(0xFF4c5475),
-                                        fontSize: 12)),
-                                Text(widget.route.from,
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold)),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16),
-
-                        // To Section
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(Icons.location_on,
-                                    color: Color(0xFF1f1047), size: 24),
-                                SizedBox(width: 8),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("To",
-                                        style: TextStyle(
-                                            color: Color(0xFF4c5475),
-                                            fontSize: 12)),
-                                    Text(widget.route.to,
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            // Time and Date Section
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  widget.route.time,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: Color(0xFF4c5475),
-                                  ),
-                                ),
-                                Text(
-                                  widget.route.date,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(0xFF4c5475),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 12),
-
-                        // Price, Seats, and Edit Button
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Price: \$${widget.route.price}",
-                                  style: TextStyle(
-                                    color: Color(0xFF1f1047),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  "Available Seats: ${widget.route.seats}",
-                                  style: TextStyle(
-                                    color: Color(0xFF1f1047),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => NewRouteScreen1()),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF1f1047),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 8,
-                                ),
+                        SizedBox(
+                          width: 50,
+                          child: Column(
+                            children: [
+                              const Icon(Icons.my_location,
+                                  color: Color(0xFF1f1047), size: 26),
+                              const SizedBox(height: 10),
+                              Column(
+                                children: List.generate(5, (index) {
+                                  return Padding(
+                                    padding:
+                                    const EdgeInsets.symmetric(vertical: 2.0),
+                                    child: Container(
+                                      width: 4,
+                                      height: 4,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFF1f1047),
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                  );
+                                }),
                               ),
-                              child: Text(
-                                "Edit",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                ),
+                              const SizedBox(height: 10),
+                              const Icon(Icons.location_on,
+                                  color: Color(0xFF1f1047), size: 30),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("From",
+                                  style: TextStyle(
+                                      color: Color(0xFF4c5475), fontSize: 14)),
+                              const SizedBox(height: 4),
+                              Text(
+                                tempProvider.from,
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
+                              const SizedBox(height: 40),
+                              const Text("To",
+                                  style: TextStyle(
+                                      color: Color(0xFF4c5475), fontSize: 14)),
+                              const SizedBox(height: 4),
+                              Text(
+                                tempProvider.to,
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              tempProvider.time,
+                              style: const TextStyle(
+                                color: Color(0xFF4c5475),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              tempProvider.date,
+                              style:
+                              const TextStyle(color: Color(0xFF4c5475)),
                             ),
                           ],
                         ),
                       ],
                     ),
                   ),
-
-                  // Note and Checkbox
-                  SizedBox(height: 24),
-                  Text(
+                  const SizedBox(height: 24),
+                  const Text(
                     'Note/Message to passengers (not required)',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
+                  const SizedBox(height: 8),
                   TextField(
-                    decoration: InputDecoration(
+                    controller: _noteController,
+                    decoration: const InputDecoration(
                       hintText: 'Write note/message here',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 12.0),
+                      contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
                     ),
                     maxLines: 4,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -209,7 +166,7 @@ class _NewRouteScreen4Form extends State<NewRouteScreen4Form> {
                           });
                         },
                       ),
-                      Expanded(
+                      const Expanded(
                         child: Text(
                           'I agree to the Terms and Conditions and Privacy Policy.',
                           style: TextStyle(fontSize: 14),
@@ -217,29 +174,95 @@ class _NewRouteScreen4Form extends State<NewRouteScreen4Form> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 16),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => NewRouteScreen1()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1f1047),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                      ),
+                      child: const Text(
+                        "Edit",
+                        style: TextStyle(color: Colors.white, fontSize: 14),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
         ),
-
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              if (!_isChecked) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content:
+                      Text('You must agree to the Terms and Conditions')),
+                );
+                return;
+              }
+
+              final routeProvider =
+              Provider.of<DriverProvider>(context, listen: false);
+
+              final newRoute = RouteModel(
+                from: tempProvider.from,
+                to: tempProvider.to,
+                date: tempProvider.date,
+                time: tempProvider.time,
+                role: "Driver",
+                driver: "RideLink",
+                seats: 3,
+                recommend: _noteController.text,
+              );
+
+              routeProvider.addRoute(newRoute);
+
+              try {
+                await FirebaseFirestore.instance
+                    .collection('driver_routes')
+                    .add(newRoute.toMap());
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Route posted successfully!')),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error saving to Firestore: $e')),
+                );
+                return;
+              }
+
+              tempProvider.clear();
+
+              Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => RoutesDriversScreen()),
+                MaterialPageRoute(builder: (_) => RoutesDriversScreen()),
+                    (route) => false,
               );
             },
             style: ElevatedButton.styleFrom(
-              minimumSize: Size(double.infinity, 50),
+              minimumSize: const Size(double.infinity, 50),
               backgroundColor: Colors.blue[800],
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
               ),
             ),
-            child: Text(
+            child: const Text(
               'Post Route',
               style: TextStyle(
                   fontSize: 18,

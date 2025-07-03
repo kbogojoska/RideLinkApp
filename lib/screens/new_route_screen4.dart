@@ -1,19 +1,11 @@
 import 'package:flutter/material.dart';
-import '../models/review_model.dart';
 import '../widgets/new_route/new_route_screen4_form.dart';
 
 class NewRouteScreen4 extends StatelessWidget {
-  final route = ReviewModel(
-     from: 'City1',
-     to: 'City2',
-     time: '12:30 PM',
-     date: '2025-01-31',
-     price: 500,
-     seats: 2,
-   );
-
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -21,21 +13,20 @@ class NewRouteScreen4 extends StatelessWidget {
             'assets/background.png',
             fit: BoxFit.cover,
             width: double.infinity,
-            height: MediaQuery.of(context).size.height,
+            height: height,
           ),
           Container(
             color: Colors.white,
-            height: MediaQuery.of(context).size.height,
+            height: height,
           ),
           Positioned(
-            bottom: MediaQuery.of(context).size.height -
-                (MediaQuery.of(context).size.height / 5.5),
+            bottom: height - (height / 5.5),
             left: 0,
             right: 0,
             child: ClipPath(
               clipper: CustomCurveClipper(),
               child: Container(
-                height: MediaQuery.of(context).size.height / 5.5,
+                height: height / 5.5,
                 child: Image.asset(
                   'assets/background.png',
                   fit: BoxFit.cover,
@@ -50,11 +41,10 @@ class NewRouteScreen4 extends StatelessWidget {
             right: 0,
             child: Container(
               color: Colors.white,
-              height: MediaQuery.of(context).size.height -
-                  (MediaQuery.of(context).size.height / 5.5)-40,
+              height: height - (height / 5.5) - 40,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: NewRouteScreen4Form(route: route),
+                child: NewRouteScreen4Form(),
               ),
             ),
           ),

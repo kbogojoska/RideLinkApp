@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/route_model.dart';
 
-class RouteProvider extends ChangeNotifier {
+class DriverProvider extends ChangeNotifier {
   final List<RouteModel> _routes = [];
 
   List<RouteModel> get routes => _routes;

@@ -6,10 +6,10 @@ import '../widgets/profile_card.dart';
 
 class ProfileScreen extends StatelessWidget {
   final ProfileModel profile = ProfileModel(
-    username: 'User',
+    username: 'Ride Link',
     phoneNumber: '001/222-333',
-    email: 'user@mail.com',
-    location: 'City, Country',
+    email: 'ride.link.emk@gmail.com',
+    location: 'Skopje, Macedonia',
   );
 
   @override

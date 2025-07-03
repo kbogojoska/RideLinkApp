@@ -1,19 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/route_passenger_model.dart';
+import '../models/route_model.dart';
+import '../providers/history_manager.dart';
 import '../providers/route_provider.dart';
 import '../providers/user_provider.dart';
 import '../widgets/app_menu.dart';
 import '../widgets/passenger_route_card.dart';
 import 'post_route_screen1.dart';
 
-class RoutesPassengersScreen extends StatelessWidget {
+class RoutesPassengersScreen extends StatefulWidget {
+  @override
+  _RoutesPassengersScreenState createState() => _RoutesPassengersScreenState();
+}
+
+class _RoutesPassengersScreenState extends State<RoutesPassengersScreen> {
+
+  void handleApply(RoutePassengerModel appliedRoute) {
+    final historyRoute = RouteModel(
+      from: appliedRoute.from,
+      to: appliedRoute.to,
+      date: appliedRoute.date,
+      time: appliedRoute.time,
+      role: "Passenger",
+      recommend: "Yes",
+    );
+
+    final routeProvider = Provider.of<RouteProvider>(context, listen: false);
+
+
+    final routeToRemove = routeProvider.routes.firstWhere(
+          (route) =>
+      route.from == appliedRoute.from &&
+          route.to == appliedRoute.to &&
+          route.date == appliedRoute.date &&
+          route.time == appliedRoute.time,
+      orElse: () => throw Exception("Route not found"),
+    );
+
+    routeProvider.removeRoute(routeToRemove);
+    HistoryManager.addToHistory(historyRoute);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final routes = Provider.of<RouteProvider>(context).routes;
+    final routeProvider = Provider.of<RouteProvider>(context);
     final role = Provider.of<UserProvider>(context).role;
 
-    final passengerRoutes = routes.map((route) => RoutePassengerModel(
+    // Build passenger routes from current provider routes dynamically
+    final passengerRoutes = routeProvider.routes.map((route) => RoutePassengerModel(
       from: route.from,
       to: route.to,
       date: route.date,
@@ -58,7 +93,10 @@ class RoutesPassengersScreen extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
             itemCount: passengerRoutes.length,
             itemBuilder: (context, index) {
-              return PassengerRouteCard(route: passengerRoutes[index]);
+              return PassengerRouteCard(
+                route: passengerRoutes[index],
+                onApply: () => handleApply(passengerRoutes[index]),
+              );
             },
           ),
         ),

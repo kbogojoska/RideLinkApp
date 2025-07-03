@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:emk/screens/new_route_screen2.dart';
 import 'package:emk/widgets/new_route/progress_bar.dart';
+import 'package:emk/providers/temporary_route_provider.dart';
 
 class NewRouteScreen1Form extends StatelessWidget {
   final TextEditingController departureController;
@@ -49,7 +51,8 @@ class NewRouteScreen1Form extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: ProgressBar(currentStep: 1,
+          child: ProgressBar(
+            currentStep: 1,
             totalSteps: 4,
             stepLabels: [
               "Trip Details",
@@ -157,10 +160,17 @@ class NewRouteScreen1Form extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: ElevatedButton(
             onPressed: () {
+              Provider.of<TemporaryDriverProvider>(context, listen: false)
+                  .setStep1(
+                from: departureController.text,
+                to: destinationController.text,
+                date: dateController.text,
+                time: timeController.text,
+              );
+
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => NewRouteScreen2()),
+                MaterialPageRoute(builder: (context) => NewRouteScreen2()),
               );
             },
             style: ElevatedButton.styleFrom(

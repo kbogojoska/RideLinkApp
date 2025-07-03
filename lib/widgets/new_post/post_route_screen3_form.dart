@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../../models/review_model.dart';
 import '../../models/route_model.dart';
 import '../../providers/route_provider.dart';
@@ -13,9 +15,7 @@ import 'progress_bar_for_passengers.dart';
 class PostRouteScreen3Form extends StatefulWidget {
   final ReviewModel route;
 
-  const PostRouteScreen3Form({
-    required this.route,
-  });
+  const PostRouteScreen3Form({required this.route});
 
   @override
   State<PostRouteScreen3Form> createState() => _PostRouteScreen3Form();
@@ -23,6 +23,13 @@ class PostRouteScreen3Form extends StatefulWidget {
 
 class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
   bool _isChecked = false;
+  final TextEditingController _noteController = TextEditingController();
+
+  @override
+  void dispose() {
+    _noteController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +49,6 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
             ],
           ),
         ),
-
         Expanded(
           child: SingleChildScrollView(
             child: Container(
@@ -50,6 +56,7 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Trip Summary
                   Container(
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -69,26 +76,21 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                                   children: [
                                     Row(
                                       children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 2),
-                                          child: Icon(Icons.my_location,
-                                              color: Color(0xFF1f1047), size: 26),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 24),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Text("From",
-                                                  style: TextStyle(
-                                                      color: Color(0xFF4c5475))),
-                                              Text(tempProvider.from,
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight: FontWeight.bold)),
-                                            ],
-                                          ),
+                                        Icon(Icons.my_location,
+                                            color: Color(0xFF1f1047), size: 26),
+                                        SizedBox(width: 16),
+                                        Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Text("From",
+                                                style: TextStyle(
+                                                    color: Color(0xFF4c5475))),
+                                            Text(tempProvider.from,
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold)),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -97,21 +99,19 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                                       children: [
                                         Icon(Icons.location_on,
                                             color: Color(0xFF1f1047), size: 30),
-                                        Padding(
-                                          padding: EdgeInsets.only(left: 20),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              Text("To",
-                                                  style: TextStyle(
-                                                      color: Color(0xFF4c5475))),
-                                              Text(tempProvider.to,
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight: FontWeight.bold)),
-                                            ],
-                                          ),
+                                        SizedBox(width: 12),
+                                        Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Text("To",
+                                                style: TextStyle(
+                                                    color: Color(0xFF4c5475))),
+                                            Text(tempProvider.to,
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold)),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -125,8 +125,8 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                                     child: Column(
                                       children: List.generate(5, (index) {
                                         return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 2.0),
+                                          padding:
+                                          const EdgeInsets.symmetric(vertical: 2.0),
                                           child: Container(
                                             width: 4,
                                             height: 4,
@@ -158,33 +158,22 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                         ),
 
                         Padding(
-                          padding: const EdgeInsets.only(
-                              top: 16.0, left: 12.0, right: 12.0),
+                          padding: const EdgeInsets.only(top: 16.0),
                           child:
                           Divider(color: Color(0xFF4c5475), thickness: 1.5),
                         ),
 
                         Padding(
-                          padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
                           child: Row(
                             children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-
-                                    SizedBox(height: 8),
-
-                                  ],
-                                ),
-                              ),
+                              Expanded(child: SizedBox()),
                               IconButton(
                                 icon: Icon(Icons.map, color: Color(0xFF1f1047)),
                                 tooltip: "Show Route on Map",
                                 onPressed: () async {
                                   final start = await GeocodingHelper.getCoordinates(tempProvider.from);
                                   final end = await GeocodingHelper.getCoordinates(tempProvider.to);
-
                                   if (start != null && end != null) {
                                     Navigator.push(
                                       context,
@@ -207,8 +196,7 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            PostRouteScreen1()),
+                                        builder: (context) => PostRouteScreen1()),
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -217,16 +205,12 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   padding: EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 8,
-                                  ),
+                                      horizontal: 16, vertical: 8),
                                 ),
                                 child: Text(
                                   "Edit",
                                   style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                  ),
+                                      color: Colors.white, fontSize: 14),
                                 ),
                               ),
                             ],
@@ -236,18 +220,18 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                     ),
                   ),
 
-                  // Note and Checkbox
                   SizedBox(height: 24),
                   Text(
                     'Note/Message to driver (not required)',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   TextField(
+                    controller: _noteController,
                     decoration: InputDecoration(
                       hintText: 'Write note/message here',
                       border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 12.0),
+                      contentPadding:
+                      EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                     ),
                     maxLines: 4,
                   ),
@@ -280,17 +264,43 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
         Padding(
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           child: ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
+              if (!_isChecked) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Please accept Terms and Conditions.')),
+                );
+                return;
+              }
+
               final routeProvider =
               Provider.of<RouteProvider>(context, listen: false);
 
-              // Use provider's current values to add route
-              routeProvider.addRoute(RouteModel(
+              final newRoute = RouteModel(
                 from: tempProvider.from,
                 to: tempProvider.to,
                 date: tempProvider.date,
                 time: tempProvider.time,
-              ));
+                role: "Passenger",
+                recommend: _noteController.text,
+                passengers: 2,
+              );
+
+              routeProvider.addRoute(newRoute);
+
+              try {
+                await FirebaseFirestore.instance
+                    .collection('passenger_routes')
+                    .add(newRoute.toMap());
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Ride request posted successfully!')),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error saving to Firestore: $e')),
+                );
+                return;
+              }
 
               tempProvider.clear();
 
@@ -310,9 +320,7 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
             child: Text(
               'Post Ride Request',
               style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
+                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
             ),
           ),
         ),

@@ -1,3 +1,5 @@
+import 'package:emk/providers/driver_provider.dart';
+import 'package:emk/providers/temporary_route_provider.dart';
 import 'package:emk/providers/user_provider.dart';
 import 'package:emk/screens/choose_role_screen.dart';
 import 'package:emk/services/firebase_service.dart';
@@ -35,6 +37,8 @@ void main() async {
           ChangeNotifierProvider(create: (_) => TemporaryRouteProvider()),
           ChangeNotifierProvider(create: (_) => RouteProvider()),
           ChangeNotifierProvider(create: (_) => UserProvider()),
+          ChangeNotifierProvider(create: (_) => TemporaryDriverProvider()),
+          ChangeNotifierProvider(create: (_) => DriverProvider())
         ],
         child: MyApp(),
       )
