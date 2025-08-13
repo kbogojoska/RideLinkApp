@@ -89,7 +89,8 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                                             Text(tempProvider.from,
                                                 style: TextStyle(
                                                     fontSize: 18,
-                                                    fontWeight: FontWeight.bold)),
+                                                    fontWeight:
+                                                    FontWeight.bold)),
                                           ],
                                         ),
                                       ],
@@ -110,7 +111,8 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                                             Text(tempProvider.to,
                                                 style: TextStyle(
                                                     fontSize: 18,
-                                                    fontWeight: FontWeight.bold)),
+                                                    fontWeight:
+                                                    FontWeight.bold)),
                                           ],
                                         ),
                                       ],
@@ -125,8 +127,8 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                                     child: Column(
                                       children: List.generate(5, (index) {
                                         return Padding(
-                                          padding:
-                                          const EdgeInsets.symmetric(vertical: 2.0),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 2.0),
                                           child: Container(
                                             width: 4,
                                             height: 4,
@@ -156,13 +158,11 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                             ),
                           ],
                         ),
-
                         Padding(
                           padding: const EdgeInsets.only(top: 16.0),
-                          child:
-                          Divider(color: Color(0xFF4c5475), thickness: 1.5),
+                          child: Divider(
+                              color: Color(0xFF4c5475), thickness: 1.5),
                         ),
-
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),
                           child: Row(
@@ -196,7 +196,8 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => PostRouteScreen1()),
+                                        builder: (context) =>
+                                            PostRouteScreen1()),
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -219,7 +220,6 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                       ],
                     ),
                   ),
-
                   SizedBox(height: 24),
                   Text(
                     'Note/Message to driver (not required)',
@@ -230,8 +230,8 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                     decoration: InputDecoration(
                       hintText: 'Write note/message here',
                       border: OutlineInputBorder(),
-                      contentPadding:
-                      EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                      contentPadding: EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 12),
                     ),
                     maxLines: 4,
                   ),
@@ -260,7 +260,6 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
             ),
           ),
         ),
-
         Padding(
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           child: ElevatedButton(
@@ -272,8 +271,8 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
                 return;
               }
 
-              final routeProvider =
-              Provider.of<RouteProvider>(context, listen: false);
+              final tempProvider = Provider.of<TemporaryRouteProvider>(context, listen: false);
+              final routeProvider = Provider.of<RouteProvider>(context, listen: false);
 
               final newRoute = RouteModel(
                 from: tempProvider.from,
@@ -288,16 +287,20 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
               routeProvider.addRoute(newRoute);
 
               try {
+                // Firebase
                 await FirebaseFirestore.instance
                     .collection('passenger_routes')
                     .add(newRoute.toMap());
+
+                // backend
+                await routeProvider.saveRouteToBackend(newRoute);
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Ride request posted successfully!')),
                 );
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error saving to Firestore: $e')),
+                  SnackBar(content: Text('Error saving route: $e')),
                 );
                 return;
               }
@@ -320,7 +323,9 @@ class _PostRouteScreen3Form extends State<PostRouteScreen3Form> {
             child: Text(
               'Post Ride Request',
               style: TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
           ),
         ),

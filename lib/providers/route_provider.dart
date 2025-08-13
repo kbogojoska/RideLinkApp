@@ -19,7 +19,7 @@ class RouteProvider extends ChangeNotifier {
   }
 
   Future<void> saveRouteToBackend(RouteModel route) async {
-    final url = Uri.parse('http://192.168.0.22:8080/api/route');
+    final url = Uri.parse('http://10.0.2.2:8080/api/route');
 
     final response = await http.post(
       url,

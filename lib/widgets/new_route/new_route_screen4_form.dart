@@ -1,6 +1,7 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 
 import '../../models/route_model.dart';
 import '../../providers/driver_provider.dart';
@@ -24,6 +25,31 @@ class _NewRouteScreen4Form extends State<NewRouteScreen4Form> {
   void dispose() {
     _noteController.dispose();
     super.dispose();
+  }
+
+  Future<void> saveRouteToBackend(RouteModel route) async {
+    final url = Uri.parse('http://localhost:8080/api/route');
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "fromLocation": route.from,
+        "toLocation": route.to,
+        "date": route.date,
+        "time": route.time,
+        "role": route.role,
+        "driver": route.driver,
+        "seats": route.seats,
+        "recommend": route.recommend,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      print('Route saved to backend!');
+    } else {
+      throw Exception('Failed to save route to backend: ${response.statusCode}');
+    }
   }
 
   @override
@@ -71,8 +97,7 @@ class _NewRouteScreen4Form extends State<NewRouteScreen4Form> {
                               Column(
                                 children: List.generate(5, (index) {
                                   return Padding(
-                                    padding:
-                                    const EdgeInsets.symmetric(vertical: 2.0),
+                                    padding: const EdgeInsets.symmetric(vertical: 2.0),
                                     child: Container(
                                       width: 4,
                                       height: 4,
@@ -130,8 +155,7 @@ class _NewRouteScreen4Form extends State<NewRouteScreen4Form> {
                             ),
                             Text(
                               tempProvider.date,
-                              style:
-                              const TextStyle(color: Color(0xFF4c5475)),
+                              style: const TextStyle(color: Color(0xFF4c5475)),
                             ),
                           ],
                         ),
@@ -210,8 +234,7 @@ class _NewRouteScreen4Form extends State<NewRouteScreen4Form> {
               if (!_isChecked) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                      content:
-                      Text('You must agree to the Terms and Conditions')),
+                      content: Text('You must agree to the Terms and Conditions')),
                 );
                 return;
               }
@@ -232,17 +255,16 @@ class _NewRouteScreen4Form extends State<NewRouteScreen4Form> {
 
               routeProvider.addRoute(newRoute);
 
+              // Save to backend instead of Firestore
               try {
-                await FirebaseFirestore.instance
-                    .collection('driver_routes')
-                    .add(newRoute.toMap());
+                await saveRouteToBackend(newRoute);
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Route posted successfully!')),
                 );
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Error saving to Firestore: $e')),
+                  SnackBar(content: Text('Error saving to backend: $e')),
                 );
                 return;
               }
